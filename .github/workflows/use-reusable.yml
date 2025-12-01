@@ -70,5 +70,5 @@ jobs:
     needs: build
     uses: ./.github/workflows/reusable.yml
     with:
-      arifact-name: dist-files
+      artifact-name: dist-files
       # phải để tên giống dist-file ở job build ấy
