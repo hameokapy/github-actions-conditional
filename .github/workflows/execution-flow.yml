@@ -68,10 +68,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dist-files
       - name: Output contents
         run: ls
       - name: Deploy
         run: echo "Deploying..."
+  report:
+    needs: [lint, deploy]
+    # phải có needs, nếu ko thì report chạy chỉ sau 1 job đầu tiên (là lint or đống job dẫn tới deploy)
+    # vì chỉ cần job đầu chạy xong là có dữ liệu feed cái failure() cho if rồi
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: output information
+        run: |
+          echo "Something went wrong"
+          echo "${{ github }}"
