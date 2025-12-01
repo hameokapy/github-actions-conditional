@@ -1,8 +1,26 @@
 name: Reusable Deploy
-on: workflow_call
+on: 
+  workflow_call:
+    inputs:
+      artifact-name: 
+        description: the name of the deployable artifact files
+        required: true 
+        # set true nghĩa là bắt buộc phải có input đầu vào cho workflow này, false là ko
+        default: dist-files 
+        # nếu ko có input đầu vào, thì sử dụng input này 
+        type: string
+        # input đầu vào sẽ lấy type phải là string
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: get code
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifact-name }}
+        # cái bên trên job là declare, còn ở đây là sử dụng biến đã declare này để 
+        # lưu trữ output trả về ở actions/download-artifacts@v3
+      - name: list files
+        run: ls
       - name: output information
         run: echo "Deploying and uploading..." 
