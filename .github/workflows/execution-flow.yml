@@ -79,10 +79,11 @@ jobs:
     needs: [lint, deploy]
     # phải có needs, nếu ko thì report chạy chỉ sau 1 job đầu tiên (là lint or đống job dẫn tới deploy)
     # vì chỉ cần job đầu chạy xong là có dữ liệu feed cái failure() cho if rồi
+    # cái needs này sẽ yêu cầu cả 2 job kia done thì mới đc chạy job report
     if: failure()
     runs-on: ubuntu-latest
     steps:
       - name: output information
         run: |
           echo "Something went wrong"
-          echo "${{ github }}"
+          echo "${{ toJSON(github) }}"
