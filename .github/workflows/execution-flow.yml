@@ -13,9 +13,10 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Lint code
         run: npm run lint
@@ -28,9 +29,10 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Test code
         id: run-tests
@@ -51,9 +53,10 @@ jobs:
         id: cache
         uses: actions/cache@v3
         with:
-          path: ~/.npm
+          path: node_modules
           key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm ci
       - name: Build website
         id: build-website
@@ -75,15 +78,3 @@ jobs:
         run: ls
       - name: Deploy
         run: echo "Deploying..."
-  report:
-    needs: [lint, deploy]
-    # phải có needs, nếu ko thì report chạy chỉ sau 1 job đầu tiên (là lint or đống job dẫn tới deploy)
-    # vì chỉ cần job đầu chạy xong là có dữ liệu feed cái failure() cho if rồi
-    # cái needs này sẽ yêu cầu cả 2 job kia done thì mới đc chạy job report
-    if: failure()
-    runs-on: ubuntu-latest
-    steps:
-      - name: output information
-        run: |
-          echo "Something went wrong"
-          echo "${{ toJSON(github) }}"
