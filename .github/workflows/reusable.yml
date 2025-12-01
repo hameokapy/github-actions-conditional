@@ -6,8 +6,8 @@ on:
         description: the name of the deployable artifact files
         required: true 
         # set true nghĩa là bắt buộc phải có input đầu vào cho workflow này, false là ko
-        default: dist-files 
-        # nếu ko có input đầu vào, thì sử dụng input này 
+        default: dist 
+        # nếu ko có input đầu vào, thì sử dụng input này: là folder dist trong project đó 
         type: string
         # input đầu vào sẽ lấy type phải là string
 jobs:
