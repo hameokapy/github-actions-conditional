@@ -5,22 +5,29 @@ on:
       artifact-name: 
         description: the name of the deployable artifact files
         required: true 
-        # set true nghĩa là bắt buộc phải có input đầu vào cho workflow này, false là ko
         default: dist 
-        # nếu ko có input đầu vào, thì sử dụng input này: là folder dist trong project đó 
         type: string
-        # input đầu vào sẽ lấy type phải là string
-jobs:
+    outputs:
+      result:
+        description: the result of the deployment operation
+        value: ${{ jobs.deploy.outputs.outcome }}
+jobs:    
+  # outputs:
+  # ko để outputs ở đây, vì cái output đang muốn sinh ra nằm trong job deploy, nên phải
+  # cho outputs nested bên trong job deploy
   deploy:
+    outputs:
+      outcome: ${{ steps.set-result.outputs.step-result }}
     runs-on: ubuntu-latest
     steps:
       - name: get code
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact-name }}
-        # cái bên trên job là declare, còn ở đây là sử dụng biến đã declare này để 
-        # lưu trữ output trả về ở actions/download-artifacts@v3
       - name: list files
         run: ls
       - name: output information
         run: echo "Deploying and uploading..." 
+      - name: set result output
+        id: set-result
+        run: echo "step-result=success" >> $GITHUB_OUTPUT
